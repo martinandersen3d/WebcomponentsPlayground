@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Web Component</title>
+  <style>
+    .cool{
+      background-color: red;
+      color:green;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Your custom web component -->
+<my-custom-element href="https://bmw.com" class="cool">Hello</my-custom-element>
+
+<script>
+  // Define the custom element class
+  class MyCustomElement extends HTMLElement {
+    constructor() {
+      super();
+
+      // Attach a shadow DOM to the element
+      this.attachShadow({ mode: 'open' });
+
+      // Get the href attribute from the custom element
+      const href = this.getAttribute('href') || '#';
+
+      // Add content to the shadow DOM
+      this.shadowRoot.innerHTML = `
+        <style>
+          /* Your component styles go here */
+          :host {
+            display: block;
+            padding: 16px;
+            background-color: lightblue;
+          }
+          :host a {
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+          }
+        </style>
+        <a href="${href}"><slot></slot></a>
+      `;
+    }
+  }
+
+  // Define the custom element tag
+  customElements.define('my-custom-element', MyCustomElement);
+</script>
+
+</body>
+</html>

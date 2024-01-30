@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Extended A Tag Component</title>
+</head>
+<body>
+
+<!-- Your extended link element -->
+<extended-link href="https://example.com">Click me!</extended-link>
+
+<script>
+  // Define the custom element class
+  class ExtendedLink extends HTMLAnchorElement {
+    constructor() {
+      super();
+
+      // Create a shadow DOM
+      const shadowRoot = this.attachShadow({ mode: 'open' });
+
+      // Get the href attribute from the custom element
+      const href = this.getAttribute('href') || '#';
+
+      // Create a template literal
+      const template = document.createElement('template');
+      template.innerHTML = `
+        <style>
+          /* Add your styles here */
+          a {
+            background-color: red;
+          }
+        </style>
+        <a href="${href}">
+          <!-- Content will be injected here -->
+        </a>
+      `;
+
+      // Append the template content to the shadow DOM
+      shadowRoot.appendChild(template.content.cloneNode(true));
+
+      // Add click event listener to the created anchor element
+      shadowRoot.querySelector('a').addEventListener('click', () => {
+        window.location.href = href;
+      });
+    }
+  }
+
+  // Define the custom element
+  customElements.define('extended-link', ExtendedLink, { extends: 'a' });
+</script>
+
+</body>
+</html>

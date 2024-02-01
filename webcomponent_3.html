@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Component</title>
+  <style>
+    .card{cursor: pointer; box-shadow: 0px 5px 6px -5px rgba(151,163,184,1); background-color: white;}
+    body {background-color: #eee;}
+  </style>
+</head>
+<body>
+
+
+<!-- Use the custom component -->
+<my-product onclick="this.hello()" class="card">
+  <template lang="application/json">
+    {
+      "ProductId": 123,
+      "ProductName": "Example Product",
+      "ProductSize": "Large",
+      "ProductUrl": "http://example.com/product123"
+    }
+  </template>
+</my-product>
+
+
+<script>
+  class MyProduct extends HTMLElement {
+    constructor() {
+      super();
+
+      // Attach a shadow DOM to the element
+      this.attachShadow({ mode: 'open' });
+
+      // // Get the href attribute from the custom element
+      // const href = this.getAttribute('href') || '#';
+
+      // Get the content from the slot
+      let templateContent = this.querySelector('template').innerHTML;
+
+      let params = JSON.parse(templateContent) 
+      // Add content to the shadow DOM
+      this.shadowRoot.innerHTML = `
+        <style>
+          /* Your component styles go here */
+          :host {
+            display: block;
+            padding: 24px;
+            margin: 16px 8px;
+            border-radius: 8px;
+          }
+        </style>
+        <div><slot></slot>
+            <div>${params.ProductId}</div>
+            <div>${params.ProductName}</div>
+            <div>${params.ProductSize}</div>
+            <div>${params.ProductUrl}</div>
+        </div>
+      `;
+    }
+
+    hello(){
+      console.log('hello');
+      alert('hello')
+
+    }
+  }
+
+  // Define the custom element
+  customElements.define('my-product', MyProduct);
+</script>
+
+</body>
+</html>

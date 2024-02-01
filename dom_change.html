@@ -1,0 +1,36 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <div id='hey'>
+        Hello
+    </div>
+
+    <button type="button" onclick="go()">Go</button>
+
+    <script>
+        function go() {
+            let el = document.querySelector('#hey');
+            el.firstChild.nodeValue = "Nice Day";
+        }
+
+        // Function to be called when the content of the 'hey' div changes
+        function onHeyChange(mutations) {
+            console.log('HIT');
+            alert('Content of #hey div changed');
+        }
+
+        // Create a MutationObserver to watch for changes in the 'hey' div
+        const observer = new MutationObserver(onHeyChange);
+
+        // Start observing the 'hey' div for changes in its content
+        observer.observe(document.getElementById('hey').firstChild, { characterData: true, subtree: false });
+    </script>
+
+
+</body>
+</html>

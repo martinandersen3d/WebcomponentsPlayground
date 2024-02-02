@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Template Web Component</title>
+</head>
+<body>
+
+<!-- Your custom web component using the template tag -->
+<template id="ui-title-template" lang="text/html">
+  <style>
+    /* Add your component styles here */
+    :host {
+      display: block;
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 5px;
+    }
+  </style>
+  <div>
+    <!-- Your component content goes here -->
+    <h2>Hello, I'm a Web Component!</h2>
+    <p>This is a simple example using the <code>&lt;template&gt;</code> tag.</p>
+  </div>
+</template>
+
+<script>
+  // Define the custom element using the Web Components API
+  class CustomComponent extends HTMLElement {
+    constructor() {
+      super();
+
+      // Create a shadow root for the component
+      this.attachShadow({ mode: 'open' });
+
+      // Get the template content and clone it
+      const template = document.getElementById('ui-title-template');
+      const templateContent = template.content.cloneNode(true);
+
+      // Append the template content to the shadow DOM
+      this.shadowRoot.appendChild(templateContent);
+    }
+
+    hello(){alert('ddd')}
+  }
+
+  // Define the custom element tag
+  customElements.define('ui-title', CustomComponent);
+</script>
+
+<!-- Use your custom web component -->
+<ui-title onclick="hello()"></ui-title>
+
+</body>
+</html>

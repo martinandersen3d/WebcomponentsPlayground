@@ -1,0 +1,97 @@
+<!-- Your custom web component using the template tag -->
+<template id="ui-title-template" lang="text/html">
+  <style>
+    /* Add your component styles here */
+    :host {
+      display: block;
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 5px;
+    }
+  </style>
+  <div>
+    <!-- Your component content goes here -->
+    <h2 @hello="" nice="">Hello, I'm a Web Component!</h2>
+    <p>This is a simple example using the <code>&lt;template&gt;</code> tag.</p>
+  </div>
+</template>
+
+<script>
+  // Define the custom element using the Web Components API
+  class UiTitle extends HTMLElement {
+    constructor() {
+      super();
+
+      // Create a shadow root for the component
+      this.attachShadow({ mode: 'open' });
+
+      // Get the template content and clone it
+      const template = document.getElementById('ui-title-template');
+      const templateContent = template.content.cloneNode(true);
+
+      // Append the template content to the shadow DOM
+      this.shadowRoot.appendChild(templateContent);
+    }
+
+    connectedCallback() {
+      // Get the 'data' attribute value
+      const jsonData = this.getAttribute('data');
+
+      try {
+        // Parse the JSON data
+        const parsedData = JSON.parse(jsonData);
+
+        // Update the content with the parsed data
+        const h2Element = this.shadowRoot.querySelector('h2');
+        const pElement = this.shadowRoot.querySelector('p');
+
+        h2Element.textContent = `Hello, ${parsedData.title || "I'm a Web Component!"}`;
+        pElement.textContent = parsedData.description || "This is a simple example using the <code>&lt;template&gt;</code> tag.";
+
+      } catch (error) {
+        console.error('Error parsing JSON:', error);
+      }
+    }
+
+    hello() {
+      alert('ddd');
+    }
+  }
+
+  // Define the custom element tag
+  customElements.define('ui-title', UiTitle);
+</script>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Template Web Component</title>
+</head>
+<body>
+  <ui-title id ="my-title" data='{"title": "Custom Title", "description": "This is a custom description."}'></ui-title>
+
+
+  <button type="button" onclick="go()">Go</button>
+
+<script>
+function go() {
+  const elTitle = document.getElementById('my-title');
+
+  if (elTitle) {
+    // Get the data attribute as a string
+    const dataAttribute = elTitle.getAttribute('data');
+    elTitle.setAttribute('data', '{"title": "I have updated", "description": "This is a custom description."}')
+  } 
+  else {
+    console.error('Element with ID "my-title" not found.');
+  }
+}
+</script>
+
+</body>
+</html>

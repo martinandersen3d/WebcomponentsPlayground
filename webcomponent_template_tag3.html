@@ -13,7 +13,7 @@
   </style>
   <div>
     <!-- Your component content goes here -->
-    <h2 @hello="" nice="">Hello, I'm a Web Component!</h2>
+    <h2>Hello, I'm a Web Component!</h2>
     <p>This is a simple example using the <code>&lt;template&gt;</code> tag.</p>
   </div>
 </template>
@@ -30,18 +30,29 @@
       // Get the template content and clone it
       const template = document.getElementById('ui-title-template');
       const templateContent = template.content.cloneNode(true);
-
+      
       // Append the template content to the shadow DOM
       this.shadowRoot.appendChild(templateContent);
     }
 
-    connectedCallback() {
-      // Get the 'data' attribute value
-      const jsonData = this.getAttribute('data');
+    static get observedAttributes() {
+      return ['data'];
+    }
 
+    attributeChangedCallback(name, oldValue, newValue) {
+      if (name === 'data' && oldValue !== newValue) {
+        this.updateContent(newValue);
+      }
+    }
+
+    connectedCallback() {
+      this.updateContent(this.getAttribute('data'));
+    }
+
+    updateContent(data) {
       try {
         // Parse the JSON data
-        const parsedData = JSON.parse(jsonData);
+        const parsedData = JSON.parse(data);
 
         // Update the content with the parsed data
         const h2Element = this.shadowRoot.querySelector('h2');
@@ -53,10 +64,6 @@
       } catch (error) {
         console.error('Error parsing JSON:', error);
       }
-    }
-
-    hello() {
-      alert('ddd');
     }
   }
 
@@ -78,20 +85,19 @@
 
   <button type="button" onclick="go()">Go</button>
 
-<script>
-function go() {
-  const elTitle = document.getElementById('my-title');
-
-  if (elTitle) {
-    // Get the data attribute as a string
-    const dataAttribute = elTitle.getAttribute('data');
-    elTitle.setAttribute('data', '{"title": "I have updated", "description": "This is a custom description."}')
-  } 
-  else {
-    console.error('Element with ID "my-title" not found.');
-  }
-}
-</script>
+  <script>
+    function go() {
+      const elTitle = document.getElementById('my-title');
+  
+      if (elTitle) {
+        // Get the data attribute as a string
+        const dataAttribute = elTitle.getAttribute('data');
+        elTitle.setAttribute('data', '{"title": "I have updated", "description": "This is a MORE custom description."}');
+      } else {
+        console.error('Element with ID "my-title" not found.');
+      }
+    }
+  </script>
 
 </body>
 </html>

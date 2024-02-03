@@ -107,6 +107,14 @@
   <button type="button" onclick="go()">Go</button>
 
   <script>
+
+  class MyPayload {
+    constructor(title, description) {
+      this.title = title;
+      this.description = description;
+    }
+  }
+
     function go() {
       const elTitle = document.getElementById('my-title');
   

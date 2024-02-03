@@ -25,110 +25,113 @@
       super();
 
       // Create a shadow root for the component
-      this.attachShadow({ mode: 'open' });
+      this.attachShadow( { mode: 'open' } );
 
       // Get the template content and clone it
-      const template = document.getElementById('ui-title-template');
-      const templateContent = template.content.cloneNode(true);
-      
+      const template = document.getElementById( 'ui-title-template' );
+      const templateContent = template.content.cloneNode( true );
+
       // Append the template content to the shadow DOM
-      this.shadowRoot.appendChild(templateContent);
+      this.shadowRoot.appendChild( templateContent );
     }
 
     static get observedAttributes() {
       return ['data'];
     }
 
-    attributeChangedCallback(name, oldValue, newValue) {
-      if (name === 'data' && oldValue !== newValue) {
-        this.updateContent(newValue);
+    attributeChangedCallback( name, oldValue, newValue ) {
+      if ( name === 'data' && oldValue !== newValue ) {
+        this.updateContent( newValue );
       }
     }
 
     connectedCallback() {
-      this.updateContent(this.getAttribute('data'));
+      this.updateContent( this.getAttribute( 'data' ) );
     }
 
-    updateContent(data) {
-    try {
-        console.log("Type of data:", typeof data);
-        console.log("Data:", data);
+    updateContent( data ) {
+      try {
+        console.log( "Type of data:", typeof data );
+        console.log( "Data:", data );
 
         let parsedData = '';
 
-        if (data === null) {
-            console.log("It's null");
-        } else if (typeof data === 'object') {
-            if (Object.prototype.toString.call(data) === '[object Object]') {
-                parsedData = data;
-            } else {
-                console.log("It's an object, but not a plain one");
-            }
-        } else if (typeof data === 'string') {
-            try {
-                parsedData = JSON.parse(data);
-            } catch (error) {
-                console.log("Invalid JSON string");
-            }
+        if ( data === null ) {
+          console.log( "It's null" );
+        } else if ( typeof data === 'object' ) {
+          if ( Object.prototype.toString.call( data ) === '[object Object]' ) {
+            parsedData = data;
+          } else {
+            console.log( "It's an object, but not a plain one" );
+          }
+        } else if ( typeof data === 'string' ) {
+          try {
+            parsedData = JSON.parse( data );
+          } catch ( error ) {
+            console.log( "Invalid JSON string" );
+          }
         } else {
-            console.log("It's neither a string nor an object");
+          console.log( "It's neither a string nor an object" );
         }
-   
+
 
         // Update the content with the parsed data
-        const h2Element = this.shadowRoot.querySelector('h2');
-        const pElement = this.shadowRoot.querySelector('p');
+        const h2Element = this.shadowRoot.querySelector( 'h2' );
+        const pElement = this.shadowRoot.querySelector( 'p' );
 
         h2Element.textContent = `Hello, ${parsedData.title || "I'm a Web Component!"}`;
         pElement.textContent = parsedData.description || "This is a simple example using the <code>&lt;template&gt;</code> tag.";
 
-      } catch (error) {
-        console.error('Error parsing JSON:', error);
+      } catch ( error ) {
+        console.error( 'Error parsing JSON:', error );
       }
     }
   }
 
   // Define the custom element tag
-  customElements.define('ui-title', UiTitle);
+  customElements.define( 'ui-title', UiTitle );
 </script>
 
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Template Web Component</title>
 </head>
+
 <body>
-  <ui-title id ="my-title" data='{"title": "Custom Title", "description": "This is a custom description."}'></ui-title>
+  <ui-title id="my-title" data='{"title": "Custom Title", "description": "This is a custom description."}'></ui-title>
 
 
   <button type="button" onclick="go()">Go</button>
 
   <script>
 
-  class MyPayload {
-    constructor(title, description) {
-      this.title = title;
-      this.description = description;
+    class MyPayload {
+      constructor( title, description ) {
+        this.title = title;
+        this.description = description;
+      }
     }
-  }
 
     function go() {
-      const elTitle = document.getElementById('my-title');
-  
-      if (elTitle) {
+      const elTitle = document.getElementById( 'my-title' );
+
+      if ( elTitle ) {
         // Get the data attribute as a string
-        const dataAttribute = elTitle.getAttribute('data');
-        elTitle.setAttribute('data', '{"title": "I have updated", "description": "This is a MORE custom description."}');
+        const dataAttribute = elTitle.getAttribute( 'data' );
+        elTitle.setAttribute( 'data', '{"title": "I have updated", "description": "This is a MORE custom description."}' );
         // elTitle.setAttribute('data', JSON.stringify( {"title": "I have updated", "description": "This is a MORE custom description."} )  );
         // elTitle.setAttribute('data',  {"title": "I have updated", "description": "This is a MORE custom description."}  );
       } else {
-        console.error('Element with ID "my-title" not found.');
+        console.error( 'Element with ID "my-title" not found.' );
       }
     }
   </script>
 
 </body>
+
 </html>

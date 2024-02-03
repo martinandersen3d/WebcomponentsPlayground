@@ -50,9 +50,30 @@
     }
 
     updateContent(data) {
-      try {
-        // Parse the JSON data
-        const parsedData = JSON.parse(data);
+    try {
+        console.log("Type of data:", typeof data);
+        console.log("Data:", data);
+
+        let parsedData = '';
+
+        if (data === null) {
+            console.log("It's null");
+        } else if (typeof data === 'object') {
+            if (Object.prototype.toString.call(data) === '[object Object]') {
+                parsedData = data;
+            } else {
+                console.log("It's an object, but not a plain one");
+            }
+        } else if (typeof data === 'string') {
+            try {
+                parsedData = JSON.parse(data);
+            } catch (error) {
+                console.log("Invalid JSON string");
+            }
+        } else {
+            console.log("It's neither a string nor an object");
+        }
+   
 
         // Update the content with the parsed data
         const h2Element = this.shadowRoot.querySelector('h2');
@@ -93,6 +114,8 @@
         // Get the data attribute as a string
         const dataAttribute = elTitle.getAttribute('data');
         elTitle.setAttribute('data', '{"title": "I have updated", "description": "This is a MORE custom description."}');
+        // elTitle.setAttribute('data', JSON.stringify( {"title": "I have updated", "description": "This is a MORE custom description."} )  );
+        // elTitle.setAttribute('data',  {"title": "I have updated", "description": "This is a MORE custom description."}  );
       } else {
         console.error('Element with ID "my-title" not found.');
       }

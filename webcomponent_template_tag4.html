@@ -1,0 +1,151 @@
+<!-- Your custom web component using the template tag -->
+<template id="ui-title-template" lang="text/html">
+  <style>
+    /* Add your component styles here */
+    :host {
+      display: block;
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 5px;
+    }
+  </style>
+  <div>
+    <!-- Your component content goes here -->
+    <h2>Hello, I'm a Web Component!</h2>
+    <p>This is a simple example using the  <code>&lt;template&gt;</code> tag.</p>
+  </div>
+</template>
+
+<script>
+  // Define the custom element using the Web Components API
+  class UiTitle extends HTMLElement {
+    constructor() {
+      super();
+      this.data = {
+        title: '',
+        description: ''
+      }
+      // Create a shadow root for the component
+      this.attachShadow( { mode: 'open' } );
+
+      // Get the template content and clone it
+      const template = document.getElementById( 'ui-title-template' );
+      const templateContent = template.content.cloneNode( true );
+
+      // Append the template content to the shadow DOM
+      this.shadowRoot.appendChild( templateContent );
+    }
+
+    static get observedAttributes() {
+      return ['data'];
+    }
+
+    attributeChangedCallback( name, oldValue, newValue ) {
+      if ( name === 'data' && oldValue !== newValue ) {
+        this.updateContent( newValue );
+      }
+    }
+
+    connectedCallback() {
+      this.updateContent( this.getAttribute( 'data' ) );
+    }
+
+    updateContent( payload ) {
+      try {
+        console.log( "Type of data:", typeof payload );
+        console.log( "Data:", payload );
+
+        let parsedData = '';
+
+        if ( payload === null ) {
+          console.log( "It's null" );
+        }
+        // TODO Fix den her class detection 
+        // // class
+        // else if (data instanceof Object) {
+        //   parsedData = { ...data };
+        //   console.log(parsedData)
+        // } 
+        // object
+        else if ( typeof payload === 'object' ) {
+          if ( Object.prototype.toString.call( payload ) === '[object Object]' ) {
+            parsedData = payload;
+          } else {
+            console.log( "It's an object, but not a plain one" );
+          }
+        } 
+        // string
+        else if ( typeof payload === 'string' ) {
+          try {
+            parsedData = JSON.parse( payload );
+          } catch ( error ) {
+            console.log( "String: Invalid JSON string" );
+          }
+        }
+        else {
+          console.log( "It's neither a string nor an object" );
+        }
+        this.data = Object.assign(this.data, parsedData)
+
+        // Update the content with the parsed data
+        const h2Element = this.shadowRoot.querySelector( 'h2' );
+        const pElement = this.shadowRoot.querySelector( 'p' );
+
+        h2Element.textContent = `Hello, ${this.data.title || "I'm a Web Component!"}`;
+        pElement.textContent = this.data.description || "This is a simple example using the <code>&lt;template&gt;</code> tag.";
+
+      } catch ( error ) {
+        console.error( 'Error parsing JSON:', error );
+      }
+    }
+  }
+
+  // Define the custom element tag
+  customElements.define( 'ui-title', UiTitle );
+</script>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Template Web Component</title>
+</head>
+
+<body>
+  <ui-title id="my-title" data='{"title": "Custom Title", "description": "This is a custom description."}'></ui-title>
+
+
+  <button type="button" onclick="go()">Go</button>
+
+  <script>
+
+    class MyPayload {
+      constructor( title, description ) {
+        this.title = title;
+        this.description = description;
+      }
+    }
+
+    function go() {
+      const elTitle = document.getElementById( 'my-title' );
+
+      if ( elTitle ) {
+        // Get the data attribute as a string
+        const dataAttribute = elTitle.getAttribute( 'data' );
+        elTitle.setAttribute( 'data', '{"title": "I have updated", "description": "This is a MORE custom description."}' );
+        // elTitle.setAttribute('data', JSON.stringify( {"title": "I have updated", "description": "This is a MORE custom description."} )  );
+        // elTitle.setAttribute('data',  new MyPayload('My Class', 'Andersen')  );
+      } else {
+        console.error( 'Element with ID "my-title" not found.' );
+      }
+    }
+  </script>
+
+</body>
+
+</html>
